@@ -2,7 +2,7 @@ package com.github.bobbobbob15;
 
 import java.io.Serializable;
 
-public class User implements Serializable {
+public class Person implements Serializable {
     public String getUsername() {
         return username;
     }

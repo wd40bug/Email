@@ -1,28 +1,24 @@
 package com.github.bobbobbob15;
 
 
+import com.google.gson.Gson;
+
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import java.io.*;
 import java.util.Properties;
+import java.util.Scanner;
 
 public class Main {
-    static String loginFile = "C:/Users/wd40b/eclipse-workspace/Email/src/main/java/com/github/bobbobbob15/login.txt";
+    static File file = new File("src/main/java/com/github/bobbobbob15/login.txt");
     public static void main(String[] args) throws IOException, ClassNotFoundException {
-        FileOutputStream fileOutputStream = new FileOutputStream(loginFile);
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-        var user = new User();
-        user.setUsername("wd50bug@gmail.com");
-        user.setPassword("mR2D8Z5RhLrnjzw");
-        objectOutputStream.writeObject(user);
-        objectOutputStream.flush();
-        objectOutputStream.close();
-        FileInputStream fileInputStream = new FileInputStream(loginFile);
-        ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-        user = (User) objectInputStream.readObject();
-        objectInputStream.close();
-        System.out.println(user.getUsername()+", "+user.getPassword());
+        var gson = new Gson();
+        var user = new Person();
+        Scanner in = new Scanner(file);
+        var fileString = in.nextLine();
+        System.out.println(fileString+"is the thing");
+        user = gson.fromJson(fileString, Person.class);
         Properties prop = new Properties();
         prop.put("mail.smtp.auth", true);
         prop.put("mail.smtp.starttls.enable", "true");
@@ -30,11 +26,11 @@ public class Main {
         prop.put("mail.smtp.port", "25");
         prop.put("mail.smtp.ssl.trust", "smtp.gmail.com");
 
-        User finalUser = user;
+        Person finalPerson = user;
         Session session = Session.getInstance(prop, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(finalUser.getUsername(), finalUser.getPassword());
+                return new PasswordAuthentication(finalPerson.getUsername(), finalPerson.getPassword());
             }
         });
     }
