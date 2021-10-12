@@ -1,7 +1,15 @@
 package com.github.bobbobbob15;
 
+import com.google.gson.Gson;
+
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Scanner;
+import javax.jnlp.*;
 
 public class EmailGUI {
     private JPanel rootPanel;
@@ -10,7 +18,23 @@ public class EmailGUI {
     private JTextField textField1;
     private JCheckBox checkBox1;
     private JButton loginButton;
-
+    private JPanel Inbox;
+    private JPanel InboxLayout;
+    private JButton composeButton;
+    private JPanel Compose;
+    private JPanel ComposePanel;
+    private JTextField textField2;
+    private JTextField textField3;
+    private JTextField textField4;
+    private JTextPane textPane1;
+    private JButton attachFileButton;
+    private JButton CCButton1;
+    private JButton BCCButton;
+    private JButton sendButton;
+    private JList list1;
+    private JButton loginFromFileButton;
+    CardLayout cl = (CardLayout)rootPanel.getLayout();
+    Person person;
 
     public EmailGUI() {
         checkBox1.addItemListener(new ItemListener() {
@@ -26,10 +50,33 @@ public class EmailGUI {
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                var frame = new JFrame();
-                var text = new JLabel("Login Successful!");
-                frame.add(text);
-                frame.setVisible(true);
+                cl.show(rootPanel,"Card2");
+                rootPanel.revalidate();
+            }
+        });
+        composeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cl.show(rootPanel,"Card3");
+            }
+        });
+        loginFromFileButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser jFileChooser = new JFileChooser("Documents");
+                jFileChooser.showOpenDialog(null);
+                int r = jFileChooser.showOpenDialog(null);
+
+                // if the user selects a file
+                if (r == JFileChooser.APPROVE_OPTION) {
+                    var file = jFileChooser.getSelectedFile();
+                    try {
+                        person = Main.getUserFromFile(file);
+                    } catch (FileNotFoundException ex) {
+                        ex.printStackTrace();
+                    }
+                    cl.show(rootPanel,"Card2");
+                }
             }
         });
     }
@@ -38,7 +85,10 @@ public class EmailGUI {
         JFrame frame = new JFrame("EmailGUI");
         frame.setContentPane(new EmailGUI().rootPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setPreferredSize(new Dimension(400,300));
         frame.pack();
+//        frame.setResizable(false);
         frame.setVisible(true);
+
     }
 }
