@@ -1,70 +1,70 @@
 package com.github.bobbobbob15;
 
-import com.google.gson.Gson;
-import org.hazlewood.connor.bottema.emailaddress.EmailAddressValidator;
-
-import javax.swing.*;
-import java.io.*;
-import java.util.Scanner;
+import java.io.Serializable;
+import java.util.Arrays;
 
 public class Person implements Serializable {
-    Person(int i) throws IOException {
-        constructor();
+    private String username;
+    private String password;
+    private String imapHost;
+    private String popHost;
+    private String smtpHost;
+    private int imapPort;
+    private int popPort;
+    private int smtpPort;
+
+    public String getImapHost() {
+        return imapHost;
     }
-    Person(){
 
+    public String getPopHost() {
+        return popHost;
     }
 
-    private void constructor() throws IOException {
-        Scanner in = new Scanner(System.in);
-        System.out.println("Hello! enter your email");
-        username = in.nextLine();
-        if (!EmailAddressValidator.isValid(username)) {
-            System.out.println("invalid input");
-            constructor();
-        }
-        var console = System.console();
-        password = readPwd();
+    @Override
+    public String toString() {
+        return "Person{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", imapHost='" + imapHost + '\'' +
+                ", popHost='" + popHost + '\'' +
+                ", smtpHost='" + smtpHost + '\'' +
+                ", imapPort=" + imapPort +
+                ", popPort=" + popPort +
+                ", smtpPort=" + smtpPort +
+                '}';
+    }
 
+    public String getSmtpHost() {
+        return smtpHost;
+    }
+
+    public int getImapPort() {
+        return imapPort;
+    }
+
+    public int getPopPort() {
+        return popPort;
+    }
+
+    public int getSmtpPort() {
+        return smtpPort;
     }
 
     public String getUsername() {
         return username;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
     }
-    private static String readPwd() throws IOException {
-        Console c=System.console();
-        if (c==null) { //IN IDE
-            System.out.print("Password: ");
-            InputStream in=System.in;
-            int max=50;
-            byte[] b=new byte[max];
 
-            int l= in.read(b);
-            l--;//last character is \n
-            if (l>0) {
-                byte[] e=new byte[l];
-                System.arraycopy(b,0, e, 0, l);
-                return new String(e);
-            } else {
-                return null;
-            }
-        } else { //Outside Eclipse IDE
-            return new String(c.readPassword("Password: "));
-        }
-    }
-
-    private String username;
-    private String password;
 }

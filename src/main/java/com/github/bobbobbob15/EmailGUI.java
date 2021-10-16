@@ -28,6 +28,7 @@ public class EmailGUI {
     private JButton sendButton;
     private JList list1;
     private JButton loginFromFileButton;
+    private JButton refreshButton;
     CardLayout cl = (CardLayout)rootPanel.getLayout();
     Person person;
 

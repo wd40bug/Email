@@ -1,4 +1,4 @@
 # Project exclude paths
 /target/
-/src/main/java/com/github/bobbobbob15/login.txt
+/src/main/java/com/github/bobbobbob15/login.json
 /login.txt
