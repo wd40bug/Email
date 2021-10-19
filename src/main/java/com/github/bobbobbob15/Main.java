@@ -3,14 +3,12 @@ package com.github.bobbobbob15;
 import com.google.gson.Gson;
 import org.simplejavamail.api.mailer.config.TransportStrategy;
 
-import javax.mail.MessagingException;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) throws IOException, MessagingException {
+    public static void main(String[] args) {
     }
  public static Person getUserFromFile(File file) throws FileNotFoundException {
         var gson = new Gson();
