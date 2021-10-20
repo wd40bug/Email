@@ -30,7 +30,6 @@ public class EmailGUI {
     private JTextPane textPane1;
     private JButton attachFileButton;
     private JButton sendButton;
-    private JList<String> list1;
     private JButton loginFromFileButton;
     private JButton refreshButton;
     private JPanel HostsAndStuff;
@@ -143,7 +142,8 @@ public class EmailGUI {
 
     private void createUIComponents() {
         defaultListModel = new DefaultListModel<>();
-        list1 = new JList<>(defaultListModel);
+        defaultListModel.addElement("yo");
+        defaultListModel.addElement("yo again");
         IMAPPort = new JFormattedTextField(555);
         POPPort = new JFormattedTextField(555);
         SMTPPort = new JFormattedTextField(555);
