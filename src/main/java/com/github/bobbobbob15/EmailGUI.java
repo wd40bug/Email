@@ -6,11 +6,10 @@ import javax.mail.MessagingException;
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 @SuppressWarnings("unused")
@@ -77,10 +76,8 @@ public class EmailGUI {
                 } catch (FileNotFoundException ex) {
                     ex.printStackTrace();
                 }
-
+                cl.show(rootPanel,"Card2");
             }
-
-            cl.show(rootPanel,"Card2");
         });
         applyButton.addActionListener(e -> {
             person.setImapHost(ImapHost.getText());
@@ -118,8 +115,15 @@ public class EmailGUI {
             for(var message : messages){
                 String messageString = null;
                 try {
-                    messageString = message.getFrom()[1].toString();
-                } catch (MessagingException ex) {
+                    messageString = message.getFrom()[0].toString();
+                    messageString+="\t"+message.getSubject();
+                    String inbound = GetInboundEmails.getMessageContent(message).replaceAll
+                            ("<br />","");
+                    if(inbound.length()>20){
+                        inbound = inbound.substring(0,20);
+                    }
+                    messageString+="\t" + inbound;
+                } catch (MessagingException | IOException ex) {
                     ex.printStackTrace();
                 }
                 defaultListModel.addElement(messageString);
@@ -138,7 +142,8 @@ public class EmailGUI {
     }
 
     private void createUIComponents() {
-        list1 = new JList<String>(defaultListModel);
+        defaultListModel = new DefaultListModel<>();
+        list1 = new JList<>(defaultListModel);
         IMAPPort = new JFormattedTextField(555);
         POPPort = new JFormattedTextField(555);
         SMTPPort = new JFormattedTextField(555);

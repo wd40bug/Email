@@ -202,6 +202,9 @@
                     <properties>
                       <model/>
                     </properties>
+                    <clientProperties>
+                      <List.isFileList class="java.lang.Boolean" value="false"/>
+                    </clientProperties>
                   </component>
                 </children>
               </grid>
