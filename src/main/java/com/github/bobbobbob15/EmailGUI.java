@@ -2,6 +2,7 @@ package com.github.bobbobbob15;
 
 import org.simplejavamail.api.mailer.config.TransportStrategy;
 
+import javax.mail.MessagingException;
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
@@ -17,7 +18,7 @@ public class EmailGUI {
     private JPanel rootPanel;
     private JPanel loginPanel;
     private JPasswordField passwordField1;
-    private JTextField textField1;
+    private JTextField username;
     private JCheckBox checkBox1;
     private JButton loginButton;
     private JPanel Inbox;
@@ -37,20 +38,19 @@ public class EmailGUI {
     private JTextField ImapHost;
     private JTextField POPHost;
     private JTextField SMTPHost;
-    private JTextField IMAPPort;
-    private JTextField POPPort;
-    private JTextField SMTPPort;
+    private JFormattedTextField IMAPPort;
+    private JFormattedTextField POPPort;
+    private JFormattedTextField SMTPPort;
     private JButton applyButton;
     private JTextField TransferProtocol;
-    private JLabel attachmentsLabel;
     private JTextField cc;
     private JTextField bcc;
+    private JTextField attachmentText;
+    private DefaultListModel<String> defaultListModel;
     CardLayout cl = (CardLayout)rootPanel.getLayout();
     Person person;
     ArrayList<File> attachments = new ArrayList<File>();
-    private final JTextComponent[] textFieldsCompose = {recipients,subject,cc,bcc,textPane1};
-
-
+    private final JTextComponent[] textFieldsCompose = {recipients,subject,cc,bcc,textPane1,attachmentText};
     public EmailGUI() {
         checkBox1.addItemListener(e -> {
             if(e.getStateChange() == ItemEvent.SELECTED){
@@ -59,7 +59,10 @@ public class EmailGUI {
                 passwordField1.setEchoChar('\u2022');
             }
         });
-        loginButton.addActionListener(e -> cl.show(rootPanel,"Card4"));
+        loginButton.addActionListener(e -> {
+            person = new Person(username.getText(),new String(passwordField1.getPassword()));
+            cl.show(rootPanel,"Card4");
+        });
         composeButton.addActionListener(e -> cl.show(rootPanel,"Card3"));
         loginFromFileButton.addActionListener(e -> {
             JFileChooser jFileChooser = new JFileChooser("Documents");
@@ -81,14 +84,14 @@ public class EmailGUI {
         });
         applyButton.addActionListener(e -> {
             person.setImapHost(ImapHost.getText());
-            person.setImapPort(Integer.parseInt(IMAPPort.getText()));
+            person.setImapPort((int)IMAPPort.getValue());
             person.setPopHost(POPHost.getText());
-            person.setPopPort(Integer.parseInt(POPPort.getText()));
+            person.setPopPort((int)POPPort.getValue());
             person.setSmtpHost(SMTPHost.getText());
-            person.setSmtpPort(Integer.parseInt(SMTPPort.getText()));
+            person.setSmtpPort((int)SMTPPort.getValue());
             person.setTransportStrategy(TransportStrategy.valueOf(TransferProtocol.getText()));
 
-            cl.show(rootPanel,"Card3");
+            cl.show(rootPanel,"Card2");
         });
         sendButton.addActionListener(e -> {
             var email = SendEmails.writeBlankEmail(person,recipients.getText(),textPane1.getText(),
@@ -101,16 +104,25 @@ public class EmailGUI {
             }
             cl.show(rootPanel,"Card2");
         });
-        attachFileButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFileChooser jFileChooser = new JFileChooser("Downloads");
-                int r = jFileChooser.showOpenDialog(null);
-                if(r==JFileChooser.APPROVE_OPTION){
-                    var file = jFileChooser.getSelectedFile();
-                    attachments.add(file);
-                    attachmentsLabel.setText(attachmentsLabel.getText()+file.getPath()+", ");
+        attachFileButton.addActionListener(e -> {
+            JFileChooser jFileChooser = new JFileChooser("Downloads");
+            int r = jFileChooser.showOpenDialog(null);
+            if(r==JFileChooser.APPROVE_OPTION){
+                var file = jFileChooser.getSelectedFile();
+                attachments.add(file);
+                attachmentText.setText(attachmentText.getText()+file.getPath()+", ");
+            }
+        });
+        refreshButton.addActionListener(e -> {
+            var messages = GetInboundEmails.downloadEmails(person);
+            for(var message : messages){
+                String messageString = null;
+                try {
+                    messageString = message.getFrom()[1].toString();
+                } catch (MessagingException ex) {
+                    ex.printStackTrace();
                 }
+                defaultListModel.addElement(messageString);
             }
         });
     }
@@ -119,9 +131,16 @@ public class EmailGUI {
         JFrame frame = new JFrame("EmailGUI");
         frame.setContentPane(new EmailGUI().rootPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setPreferredSize(new Dimension(400,300));
+        frame.setPreferredSize(new Dimension(800,600));
         frame.pack();
         frame.setVisible(true);
 
+    }
+
+    private void createUIComponents() {
+        list1 = new JList<String>(defaultListModel);
+        IMAPPort = new JFormattedTextField(555);
+        POPPort = new JFormattedTextField(555);
+        SMTPPort = new JFormattedTextField(555);
     }
 }
