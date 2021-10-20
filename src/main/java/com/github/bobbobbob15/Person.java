@@ -1,11 +1,48 @@
 package com.github.bobbobbob15;
 
+import org.simplejavamail.api.mailer.config.TransportStrategy;
+
 import java.io.Serializable;
 import java.util.Arrays;
 
 public class Person implements Serializable {
     private String username;
     private String password;
+
+    public TransportStrategy getTransportStrategy() {
+        return transportStrategy;
+    }
+
+    public void setTransportStrategy(TransportStrategy transportStrategy) {
+        this.transportStrategy = transportStrategy;
+    }
+
+    private TransportStrategy transportStrategy;
+
+    public void setImapHost(String imapHost) {
+        this.imapHost = imapHost;
+    }
+
+    public void setPopHost(String popHost) {
+        this.popHost = popHost;
+    }
+
+    public void setSmtpHost(String smtpHost) {
+        this.smtpHost = smtpHost;
+    }
+
+    public void setImapPort(int imapPort) {
+        this.imapPort = imapPort;
+    }
+
+    public void setPopPort(int popPort) {
+        this.popPort = popPort;
+    }
+
+    public void setSmtpPort(int smtpPort) {
+        this.smtpPort = smtpPort;
+    }
+
     private String imapHost;
     private String popHost;
     private String smtpHost;
