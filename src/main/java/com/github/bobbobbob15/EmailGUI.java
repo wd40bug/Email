@@ -30,6 +30,10 @@ public class EmailGUI {
     private JButton loginFromFileButton;
     private JButton refreshButton;
     private JPanel HostsAndStuff;
+    private JTextField recipients;
+    private JTextField subject;
+    private JTextField cc;
+    private JTextField bcc;
     CardLayout cl = (CardLayout)rootPanel.getLayout();
     Person person;
 
