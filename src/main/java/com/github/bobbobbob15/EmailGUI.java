@@ -44,10 +44,12 @@ public class EmailGUI {
     private JTextField cc;
     private JTextField bcc;
     private JTextField attachmentText;
+    private JList<String> list1;
+    private JTextArea textArea1;
     private DefaultListModel<String> defaultListModel;
-    CardLayout cl = (CardLayout)rootPanel.getLayout();
+    CardLayout cl = (CardLayout) rootPanel.getLayout();
     Person person;
-    ArrayList<File> attachments = new ArrayList<File>();
+    ArrayList<File> attachments = new ArrayList<>();
     private final JTextComponent[] textFieldsCompose = {recipients,subject,cc,bcc,textPane1,attachmentText};
     public EmailGUI() {
         checkBox1.addItemListener(e -> {
