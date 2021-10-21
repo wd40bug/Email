@@ -1,23 +1,16 @@
 package com.github.bobbobbob15;
 
-import org.simplejavamail.api.mailer.config.TransportStrategy;
-
-import javax.mail.MessagingException;
 import javax.swing.*;
-import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.ItemEvent;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
 
 @SuppressWarnings("unused")
 public class EmailGUI {
     private JPanel rootPanel;
     private JPanel loginPanel;
     private JPasswordField passwordField1;
-    private JTextField username;
+    private JTextField textField1;
     private JCheckBox checkBox1;
     private JButton loginButton;
     private JPanel Inbox;
@@ -25,32 +18,21 @@ public class EmailGUI {
     private JButton composeButton;
     private JPanel Compose;
     private JPanel ComposePanel;
-    private JTextField recipients;
-    private JTextField subject;
+    private JTextField textField2;
+    private JTextField textField3;
+    private JTextField textField4;
     private JTextPane textPane1;
     private JButton attachFileButton;
+    private JButton CCButton1;
+    private JButton BCCButton;
     private JButton sendButton;
+    private JList<String> list1;
     private JButton loginFromFileButton;
     private JButton refreshButton;
     private JPanel HostsAndStuff;
-    private JTextField ImapHost;
-    private JTextField POPHost;
-    private JTextField SMTPHost;
-    private JFormattedTextField IMAPPort;
-    private JFormattedTextField POPPort;
-    private JFormattedTextField SMTPPort;
-    private JButton applyButton;
-    private JTextField TransferProtocol;
-    private JTextField cc;
-    private JTextField bcc;
-    private JTextField attachmentText;
-    private JList<String> list1;
-    private JTextArea textArea1;
-    private DefaultListModel<String> defaultListModel;
-    CardLayout cl = (CardLayout) rootPanel.getLayout();
+    CardLayout cl = (CardLayout)rootPanel.getLayout();
     Person person;
-    ArrayList<File> attachments = new ArrayList<>();
-    private final JTextComponent[] textFieldsCompose = {recipients,subject,cc,bcc,textPane1,attachmentText};
+
     public EmailGUI() {
         checkBox1.addItemListener(e -> {
             if(e.getStateChange() == ItemEvent.SELECTED){
@@ -60,18 +42,18 @@ public class EmailGUI {
             }
         });
         loginButton.addActionListener(e -> {
-            person = new Person(username.getText(),new String(passwordField1.getPassword()));
-            cl.show(rootPanel,"Card4");
+            cl.show(rootPanel,"Card2");
+            rootPanel.revalidate();
         });
         composeButton.addActionListener(e -> cl.show(rootPanel,"Card3"));
         loginFromFileButton.addActionListener(e -> {
             JFileChooser jFileChooser = new JFileChooser("Documents");
-//            jFileChooser.showOpenDialog(null);
+            jFileChooser.showOpenDialog(null);
             int r = jFileChooser.showOpenDialog(null);
 
             // if the user selects a file
             if (r == JFileChooser.APPROVE_OPTION) {
-                File file = jFileChooser.getSelectedFile();
+                var file = jFileChooser.getSelectedFile();
                 try {
                     person = Main.getUserFromFile(file);
                 } catch (FileNotFoundException ex) {
@@ -80,74 +62,16 @@ public class EmailGUI {
                 cl.show(rootPanel,"Card2");
             }
         });
-        applyButton.addActionListener(e -> {
-            person.setImapHost(ImapHost.getText());
-            person.setImapPort((int)IMAPPort.getValue());
-            person.setPopHost(POPHost.getText());
-            person.setPopPort((int)POPPort.getValue());
-            person.setSmtpHost(SMTPHost.getText());
-            person.setSmtpPort((int)SMTPPort.getValue());
-            person.setTransportStrategy(TransportStrategy.valueOf(TransferProtocol.getText()));
-
-            cl.show(rootPanel,"Card2");
-        });
-        sendButton.addActionListener(e -> {
-            var email = SendEmails.writeBlankEmail(person,recipients.getText(),textPane1.getText(),
-                    subject.getText(),cc.getText(),bcc.getText(),attachments.toArray(new File[0]));
-            SendEmails.sendEmail(email,person);
-            subject.setText("");
-            for(var comp : textFieldsCompose){
-                comp.setText("");
-
-            }
-            cl.show(rootPanel,"Card2");
-        });
-        attachFileButton.addActionListener(e -> {
-            JFileChooser jFileChooser = new JFileChooser("Downloads");
-            int r = jFileChooser.showOpenDialog(null);
-            if(r==JFileChooser.APPROVE_OPTION){
-                var file = jFileChooser.getSelectedFile();
-                attachments.add(file);
-                attachmentText.setText(attachmentText.getText()+file.getPath()+", ");
-            }
-        });
-        refreshButton.addActionListener(e -> {
-            var messages = GetInboundEmails.downloadEmails(person);
-            for(var message : messages){
-                String messageString = null;
-                try {
-                    messageString = message.getFrom()[0].toString();
-                    messageString+="\t"+message.getSubject();
-                    String inbound = GetInboundEmails.getMessageContent(message).replaceAll
-                            ("<br />","");
-                    if(inbound.length()>20){
-                        inbound = inbound.substring(0,20);
-                    }
-                    messageString+="\t" + inbound;
-                } catch (MessagingException | IOException ex) {
-                    ex.printStackTrace();
-                }
-                defaultListModel.addElement(messageString);
-            }
-        });
     }
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("EmailGUI");
         frame.setContentPane(new EmailGUI().rootPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setPreferredSize(new Dimension(800,600));
+        frame.setPreferredSize(new Dimension(400,300));
         frame.pack();
+//        frame.setResizable(false);
         frame.setVisible(true);
 
-    }
-
-    private void createUIComponents() {
-        defaultListModel = new DefaultListModel<>();
-        defaultListModel.addElement("yo");
-        defaultListModel.addElement("yo again");
-        IMAPPort = new JFormattedTextField(555);
-        POPPort = new JFormattedTextField(555);
-        SMTPPort = new JFormattedTextField(555);
     }
 }
