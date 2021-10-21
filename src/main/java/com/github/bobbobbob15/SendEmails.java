@@ -15,9 +15,13 @@ public class SendEmails {
                 .from(user.getUsername())
                 .to(recipients)
                 .withPlainText(text)
-                .withSubject(subject)
-                .cc(cc)
-                .bcc(bcc);
+                .withSubject(subject);
+        if(!cc.isEmpty()){
+            emailBuilder.cc(cc);
+        }
+        if(!bcc.isEmpty()){
+            emailBuilder.bcc(bcc);
+        }
         for(var attachment:attachments){
             emailBuilder.withAttachment(attachment.getName(),new FileDataSource(attachment));
         }
@@ -25,7 +29,7 @@ public class SendEmails {
     }
     public static void sendEmail(Email email, Person user){
         MailerBuilder
-                .withSMTPServer(user.getSmtpHost(), user.getImapPort(), user.getUsername(), user.getPassword())
+                .withSMTPServer(user.getSmtpHost(), user.getSmtpPort(), user.getUsername(), user.getPassword())
                 .withTransportStrategy(user.getTransportStrategy())
                 .buildMailer()
                 .sendMail(email);
