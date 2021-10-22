@@ -84,22 +84,22 @@ public class GetInboundEmails {
         return result;
     }
     public static String getTextFromMimeMultipart(MimeMultipart mimeMultipart) throws MessagingException, IOException {
-        String result = "";
+        StringBuilder result = new StringBuilder();
         int count = mimeMultipart.getCount();
         var gson = new Gson();
         for (int i = 0; i < count; i++) {
             BodyPart bodyPart = mimeMultipart.getBodyPart(i);
             if (bodyPart.isMimeType("text/plain")) {
-                result = result + "\n" + bodyPart.getContent();
+                result.append("\n").append(bodyPart.getContent());
                 break; // without break same text appears twice in my tests
             } else if (bodyPart.isMimeType("text/html")) {
                 String html = (String) bodyPart.getContent();
-                result = result + "\n" + gson.fromJson(html,String.class);
+                result.append("\n").append(gson.fromJson(html, String.class));
             } else if (bodyPart.getContent() instanceof MimeMultipart){
-                result = result + getTextFromMimeMultipart((MimeMultipart)bodyPart.getContent());
+                result.append(getTextFromMimeMultipart((MimeMultipart) bodyPart.getContent()));
             }
         }
-        return result;
+        return result.toString();
     }
 
 

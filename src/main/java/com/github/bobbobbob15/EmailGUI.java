@@ -4,13 +4,13 @@ import org.simplejavamail.api.mailer.config.TransportStrategy;
 
 import javax.mail.MessagingException;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 @SuppressWarnings("unused")
@@ -31,7 +31,6 @@ public class EmailGUI {
     private JTextPane textPane1;
     private JButton attachFileButton;
     private JButton sendButton;
-    private JList<String> list1;
     private JButton loginFromFileButton;
     private JButton refreshButton;
     private JPanel HostsAndStuff;
@@ -46,10 +45,11 @@ public class EmailGUI {
     private JTextField cc;
     private JTextField bcc;
     private JTextField attachmentText;
-    private DefaultListModel<String> defaultListModel;
+    private JTable table1;
+    private DefaultTableModel defaultTableModel;
     CardLayout cl = (CardLayout)rootPanel.getLayout();
     Person person;
-    ArrayList<File> attachments = new ArrayList<File>();
+    ArrayList<File> attachments = new ArrayList<>();
     private final JTextComponent[] textFieldsCompose = {recipients,subject,cc,bcc,textPane1,attachmentText};
     public EmailGUI() {
         checkBox1.addItemListener(e -> {
@@ -77,10 +77,11 @@ public class EmailGUI {
                 } catch (FileNotFoundException ex) {
                     ex.printStackTrace();
                 }
-
+                System.out.println(person);
+                cl.show(rootPanel,"Card2");
             }
 
-            cl.show(rootPanel,"Card2");
+
         });
         applyButton.addActionListener(e -> {
             person.setImapHost(ImapHost.getText());
@@ -115,14 +116,20 @@ public class EmailGUI {
         });
         refreshButton.addActionListener(e -> {
             var messages = GetInboundEmails.downloadEmails(person);
+
+            table1.setModel(defaultTableModel);
             for(var message : messages){
+                var row = new String[3];
                 String messageString = null;
                 try {
-                    messageString = message.getFrom()[0].toString();
-                } catch (MessagingException ex) {
+                    row[0] = message.getFrom()[0].toString();
+                    row[1]=message.getSubject();
+                    var content = GetInboundEmails.getMessageContent(message);
+                    row[2] = content;
+                } catch (MessagingException | IOException ex) {
                     ex.printStackTrace();
                 }
-                defaultListModel.addElement(messageString);
+                defaultTableModel.addRow(row);
             }
         });
     }
@@ -138,8 +145,11 @@ public class EmailGUI {
     }
 
     private void createUIComponents() {
-        defaultListModel = new DefaultListModel<>();
-        list1 = new JList<String>(defaultListModel);
+        defaultTableModel = new DefaultTableModel();
+        defaultTableModel.addColumn("From");
+        defaultTableModel.addColumn("Subject");
+        defaultTableModel.addColumn("Content");
+        table1 = new JTable();
         IMAPPort = new JFormattedTextField(555);
         POPPort = new JFormattedTextField(555);
         SMTPPort = new JFormattedTextField(555);
