@@ -17,6 +17,15 @@ public class Person implements Serializable {
         this.transportStrategy = transportStrategy;
     }
 
+    public Person(String username, String password){
+        this.username = username;
+        this.password = password;
+        new Person();
+    }
+    public Person(){
+
+    }
+
     private TransportStrategy transportStrategy;
 
     public void setImapHost(String imapHost) {
