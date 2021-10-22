@@ -118,7 +118,7 @@ public class EmailGUI {
             for(var message : messages){
                 String messageString = null;
                 try {
-                    messageString = message.getFrom()[1].toString();
+                    messageString = message.getFrom()[0].toString();
                 } catch (MessagingException ex) {
                     ex.printStackTrace();
                 }
@@ -138,6 +138,7 @@ public class EmailGUI {
     }
 
     private void createUIComponents() {
+        defaultListModel = new DefaultListModel<>();
         list1 = new JList<String>(defaultListModel);
         IMAPPort = new JFormattedTextField(555);
         POPPort = new JFormattedTextField(555);
