@@ -9,15 +9,6 @@ public class Person implements Serializable {
     private String username;
     private String password;
 
-    public Person(){
-
-    }
-    public Person(String username, String password) {
-        this.username = username;
-        this.password = password;
-        new Person();
-    }
-
     public TransportStrategy getTransportStrategy() {
         return transportStrategy;
     }

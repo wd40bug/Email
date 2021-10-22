@@ -16,14 +16,14 @@ public class SendEmails {
                 .to(recipients)
                 .withPlainText(text)
                 .withSubject(subject);
-        for(var attachment:attachments){
-            emailBuilder.withAttachment(attachment.getName(),new FileDataSource(attachment));
-        }
         if(!cc.isEmpty()){
             emailBuilder.cc(cc);
         }
         if(!bcc.isEmpty()){
             emailBuilder.bcc(bcc);
+        }
+        for(var attachment:attachments){
+            emailBuilder.withAttachment(attachment.getName(),new FileDataSource(attachment));
         }
         return emailBuilder.buildEmail();
     }
