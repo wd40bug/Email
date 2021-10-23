@@ -46,6 +46,8 @@ public class EmailGUI {
     private JTextField bcc;
     private JTextField attachmentText;
     private JTable table1;
+    private JPanel EmailGUI;
+    private JLabel Subject;
     private DefaultTableModel defaultTableModel;
     CardLayout cl = (CardLayout)rootPanel.getLayout();
     Person person;
