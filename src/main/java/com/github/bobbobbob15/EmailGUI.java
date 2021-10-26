@@ -2,11 +2,14 @@ package com.github.bobbobbob15;
 
 import org.simplejavamail.api.mailer.config.TransportStrategy;
 
+import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -47,7 +50,13 @@ public class EmailGUI {
     private JTextField attachmentText;
     private JTable table1;
     private JPanel EmailGUI;
+//    private JTable table2;
+    private JEditorPane editorPane1;
+    private JLabel Author;
     private JLabel Subject;
+    private JButton backButton;
+    private JButton forwardButton;
+    private JButton replyButton;
     private DefaultTableModel defaultTableModel;
     CardLayout cl = (CardLayout)rootPanel.getLayout();
     Person person;
@@ -121,18 +130,30 @@ public class EmailGUI {
 
             table1.setModel(defaultTableModel);
             for(var message : messages){
-                var row = new String[3];
+                var row = new Object[4];
                 String messageString = null;
                 try {
                     row[0] = message.getFrom()[0].toString();
                     row[1]=message.getSubject();
                     var content = GetInboundEmails.getMessageContent(message);
                     row[2] = content;
+                    row[3] = message;
                 } catch (MessagingException | IOException ex) {
                     ex.printStackTrace();
                 }
                 defaultTableModel.addRow(row);
             }
+            table1.removeColumn(table1.getColumnModel().getColumn(3));
+        });
+        table1.getSelectionModel().addListSelectionListener(e->{
+            try {
+                setEmailVeiw((Message) table1.getModel().getValueAt(table1.getSelectedRow(),3));
+            } catch (MessagingException | IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+        backButton.addActionListener(e -> {
+            cl.show(rootPanel,"Card2");
         });
     }
 
@@ -147,13 +168,25 @@ public class EmailGUI {
     }
 
     private void createUIComponents() {
-        defaultTableModel = new DefaultTableModel();
+        defaultTableModel = new DefaultTableModel(){
+            @Override
+            public boolean isCellEditable(int row, int column){
+                return false;
+            }
+        };
         defaultTableModel.addColumn("From");
         defaultTableModel.addColumn("Subject");
         defaultTableModel.addColumn("Content");
+        defaultTableModel.addColumn("Message");
         table1 = new JTable();
         IMAPPort = new JFormattedTextField(555);
         POPPort = new JFormattedTextField(555);
         SMTPPort = new JFormattedTextField(555);
+    }
+    private void setEmailVeiw(Message message) throws MessagingException, IOException {
+        Author.setText(message.getFrom()[0].toString());
+        Subject.setText(message.getSubject());
+        editorPane1.setText(GetInboundEmails.getMessageContent(message));
+        cl.show(rootPanel,"Card5");
     }
 }
