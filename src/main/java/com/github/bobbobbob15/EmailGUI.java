@@ -8,8 +8,6 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -147,14 +145,12 @@ public class EmailGUI {
         });
         table1.getSelectionModel().addListSelectionListener(e->{
             try {
-                setEmailVeiw((Message) table1.getModel().getValueAt(table1.getSelectedRow(),3));
+                setEmailView((Message) table1.getModel().getValueAt(table1.getSelectedRow(),3));
             } catch (MessagingException | IOException ex) {
                 ex.printStackTrace();
             }
         });
-        backButton.addActionListener(e -> {
-            cl.show(rootPanel,"Card2");
-        });
+        backButton.addActionListener(e -> cl.show(rootPanel,"Card2"));
     }
 
     public static void main(String[] args) {
@@ -183,7 +179,7 @@ public class EmailGUI {
         POPPort = new JFormattedTextField(555);
         SMTPPort = new JFormattedTextField(555);
     }
-    private void setEmailVeiw(Message message) throws MessagingException, IOException {
+    private void setEmailView(Message message) throws MessagingException, IOException {
         Author.setText(message.getFrom()[0].toString());
         Subject.setText(message.getSubject());
         editorPane1.setText(GetInboundEmails.getMessageContent(message));
