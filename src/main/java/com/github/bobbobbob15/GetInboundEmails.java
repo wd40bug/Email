@@ -104,7 +104,6 @@ public class GetInboundEmails {
             } else if(bodyPart.isMimeType("text/html")||bodyPart.isMimeType("text/plain")){
                 result.append("\n").append((String)bodyPart.getContent());
             }
-            System.out.println(result);
         }
         return result.toString();
     }

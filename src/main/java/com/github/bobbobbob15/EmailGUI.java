@@ -183,7 +183,9 @@ public class EmailGUI {
     private void setEmailView(Message message) throws MessagingException, IOException {
         Author.setText(message.getFrom()[0].toString());
         Subject.setText(message.getSubject());
-        editorPane1.setText(GetInboundEmails.messageToHtml(message));
+        String messageToHtml = GetInboundEmails.messageToHtml(message);
+        editorPane1.setText(messageToHtml);
+        System.out.println(messageToHtml);
         cl.show(rootPanel,"Card5");
     }
 }

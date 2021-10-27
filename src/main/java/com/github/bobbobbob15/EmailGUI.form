@@ -665,6 +665,7 @@
             </constraints>
             <properties>
               <contentType value="text/html"/>
+              <editable value="false"/>
             </properties>
           </component>
           <component id="35bb8" class="javax.swing.JLabel" binding="Subject">
