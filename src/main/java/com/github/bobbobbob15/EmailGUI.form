@@ -663,7 +663,9 @@
                 <preferred-size width="150" height="50"/>
               </grid>
             </constraints>
-            <properties/>
+            <properties>
+              <contentType value="text/html"/>
+            </properties>
           </component>
           <component id="35bb8" class="javax.swing.JLabel" binding="Subject">
             <constraints>

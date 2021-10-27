@@ -2,8 +2,10 @@ package com.github.bobbobbob15;
 
 
 import com.google.gson.Gson;
+import org.simplejavamail.converter.EmailConverter;
 
 import javax.mail.*;
+import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import java.io.IOException;
 import java.util.Properties;
@@ -82,6 +84,29 @@ public class GetInboundEmails {
             result = getTextFromMimeMultipart(mimeMultipart);
         }
         return result;
+    }
+    public static String messageToHtml(Message message) throws MessagingException, IOException {
+        var result = "";
+        if(message.isMimeType("text/plain")){
+            return message.getContent().toString();
+        } else if(message.isMimeType("multipart/*")) {
+            var messageContent = (MimeMultipart)message.getContent();
+            result+=multipartToHtml(messageContent);
+        }
+        return result;
+    }
+    public  static String multipartToHtml(MimeMultipart mimeMultipart) throws MessagingException, IOException {
+        StringBuilder result = new StringBuilder();
+        for(int i = 0; i<mimeMultipart.getCount();i++){
+            var bodyPart = mimeMultipart.getBodyPart(i);
+            if(bodyPart.getContent() instanceof MimeMultipart){
+                result.append("\n").append(multipartToHtml((MimeMultipart) bodyPart.getContent()));
+            } else if(bodyPart.isMimeType("text/html")||bodyPart.isMimeType("text/plain")){
+                result.append("\n").append((String)bodyPart.getContent());
+            }
+            System.out.println(result);
+        }
+        return result.toString();
     }
     public static String getTextFromMimeMultipart(MimeMultipart mimeMultipart) throws MessagingException, IOException {
         StringBuilder result = new StringBuilder();

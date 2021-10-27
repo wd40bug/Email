@@ -157,7 +157,8 @@ public class EmailGUI {
         JFrame frame = new JFrame("EmailGUI");
         frame.setContentPane(new EmailGUI().rootPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setPreferredSize(new Dimension(800,600));
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        frame.setPreferredSize(screenSize);
         frame.pack();
         frame.setVisible(true);
 
@@ -182,7 +183,7 @@ public class EmailGUI {
     private void setEmailView(Message message) throws MessagingException, IOException {
         Author.setText(message.getFrom()[0].toString());
         Subject.setText(message.getSubject());
-        editorPane1.setText(GetInboundEmails.getMessageContent(message));
+        editorPane1.setText(GetInboundEmails.messageToHtml(message));
         cl.show(rootPanel,"Card5");
     }
 }
