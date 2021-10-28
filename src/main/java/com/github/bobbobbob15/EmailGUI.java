@@ -8,6 +8,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -55,6 +57,9 @@ public class EmailGUI {
     private JButton backButton;
     private JButton forwardButton;
     private JButton replyButton;
+    private JPanel ReplyGUI;
+    private JTextPane textPane2;
+    private JButton sendButton1;
     private DefaultTableModel defaultTableModel;
     CardLayout cl = (CardLayout)rootPanel.getLayout();
     Person person;
@@ -125,7 +130,8 @@ public class EmailGUI {
         });
         refreshButton.addActionListener(e -> {
             var messages = GetInboundEmails.downloadEmails(person);
-
+            defaultTableModel.addColumn("Message");
+            defaultTableModel.setRowCount(0);
             table1.setModel(defaultTableModel);
             for(var message : messages){
                 var row = new Object[4];
@@ -151,6 +157,9 @@ public class EmailGUI {
             }
         });
         backButton.addActionListener(e -> cl.show(rootPanel,"Card2"));
+        replyButton.addActionListener(e -> {
+            cl.show(rootPanel,"Card6");
+        });
     }
 
     public static void main(String[] args) {
@@ -174,7 +183,6 @@ public class EmailGUI {
         defaultTableModel.addColumn("From");
         defaultTableModel.addColumn("Subject");
         defaultTableModel.addColumn("Content");
-        defaultTableModel.addColumn("Message");
         table1 = new JTable();
         IMAPPort = new JFormattedTextField(555);
         POPPort = new JFormattedTextField(555);
@@ -183,7 +191,13 @@ public class EmailGUI {
     private void setEmailView(Message message) throws MessagingException, IOException {
         Author.setText(message.getFrom()[0].toString());
         Subject.setText(message.getSubject());
-        String messageToHtml = GetInboundEmails.messageToHtml(message);
+        var mime = GetInboundEmails.messageToMimeMessage(message);
+        var messageToHtml = GetInboundEmails.mimeMessageToHtml(mime);
+//        if(messageToHtml.contains("<!DOCTYPE")) {
+//            messageToHtml = messageToHtml.substring(messageToHtml.indexOf("<!DOCTYPE") - 2);
+//        } else if(messageToHtml.contains("<html>")){
+//            messageToHtml = messageToHtml.substring(messageToHtml.indexOf("<html>")-2);
+//        }
         editorPane1.setText(messageToHtml);
         System.out.println(messageToHtml);
         cl.show(rootPanel,"Card5");

@@ -95,6 +95,14 @@ public class GetInboundEmails {
         }
         return result;
     }
+    public static MimeMessage messageToMimeMessage(Message message) throws MessagingException, IOException {
+        var email = EmailConverter.mimeMessageToEmail((MimeMessage) message);
+        return new MimeMessage(message.getSession(),message.getInputStream());
+    }
+    public static String mimeMessageToHtml(MimeMessage message){
+        var email = EmailConverter.mimeMessageToEmail(message);
+        return email.getHTMLText();
+    }
     public  static String multipartToHtml(MimeMultipart mimeMultipart) throws MessagingException, IOException {
         StringBuilder result = new StringBuilder();
         for(int i = 0; i<mimeMultipart.getCount();i++){
