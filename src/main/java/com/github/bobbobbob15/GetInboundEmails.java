@@ -86,14 +86,15 @@ public class GetInboundEmails {
         return result;
     }
     public static String messageToHtml(Message message) throws MessagingException, IOException {
-        var result = "";
-        if(message.isMimeType("text/plain")){
-            return message.getContent().toString();
-        } else if(message.isMimeType("multipart/*")) {
-            var messageContent = (MimeMultipart)message.getContent();
-            result+=multipartToHtml(messageContent);
-        }
-        return result;
+//        var result = "";
+//        if(message.isMimeType("text/plain")){
+//            return message.getContent().toString();
+//        } else if(message.isMimeType("multipart/*")) {
+//            var messageContent = (MimeMultipart)message.getContent();
+//            result+=multipartToHtml(messageContent);
+//        }
+//        return result;
+        return EmailConverter.mimeMessageToEmail((MimeMessage) message).getHTMLText();
     }
     public static MimeMessage messageToMimeMessage(Message message) throws MessagingException, IOException {
         var email = EmailConverter.mimeMessageToEmail((MimeMessage) message);

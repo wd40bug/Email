@@ -8,8 +8,6 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -191,15 +189,8 @@ public class EmailGUI {
     private void setEmailView(Message message) throws MessagingException, IOException {
         Author.setText(message.getFrom()[0].toString());
         Subject.setText(message.getSubject());
-        var mime = GetInboundEmails.messageToMimeMessage(message);
-        var messageToHtml = GetInboundEmails.mimeMessageToHtml(mime);
-//        if(messageToHtml.contains("<!DOCTYPE")) {
-//            messageToHtml = messageToHtml.substring(messageToHtml.indexOf("<!DOCTYPE") - 2);
-//        } else if(messageToHtml.contains("<html>")){
-//            messageToHtml = messageToHtml.substring(messageToHtml.indexOf("<html>")-2);
-//        }
+        var messageToHtml = GetInboundEmails.messageToHtml(message);
         editorPane1.setText(messageToHtml);
-        System.out.println(messageToHtml);
         cl.show(rootPanel,"Card5");
     }
 }
